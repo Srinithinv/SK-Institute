@@ -51,7 +51,7 @@ export function Testimonials() {
   };
 
   return (
-    <section className="pt-16 pb-8 md:pt-24 md:pb-12 bg-white relative overflow-hidden" id="testimonials">
+    <section className="pt-10 pb-8 md:pt-24 md:pb-12 bg-white relative overflow-hidden" id="testimonials">
       
       {/* Background styling */}
       <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-brand/5 to-transparent pointer-events-none" />

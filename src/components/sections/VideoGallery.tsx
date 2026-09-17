@@ -80,7 +80,7 @@ export function VideoGallery() {
   };
 
   return (
-    <section className="py-24 bg-dark/5 relative overflow-hidden" id="video-gallery">
+    <section className="py-10 md:py-24 bg-dark/5 relative overflow-hidden" id="video-gallery">
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 relative z-10">
         
         <div className="flex flex-col items-center text-center mb-10">
