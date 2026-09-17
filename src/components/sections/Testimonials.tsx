@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { Quote, Star } from 'lucide-react';
+import { Quote, Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useRef, useEffect } from 'react';
 
 const testimonials = [
   {
@@ -26,6 +27,29 @@ const testimonials = [
 ];
 
 export function Testimonials() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (window.innerWidth < 768 && scrollRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+        if (scrollLeft + clientWidth >= scrollWidth - 10) {
+          scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          scrollRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+        }
+      }
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const scrollAmount = direction === 'left' ? -300 : 300;
+      scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
   return (
     <section className="pt-16 pb-8 md:pt-24 md:pb-12 bg-white relative overflow-hidden" id="testimonials">
       
@@ -49,7 +73,11 @@ export function Testimonials() {
           </motion.div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="relative group/carousel">
+          <div 
+            ref={scrollRef}
+            className="flex md:grid overflow-x-auto snap-x snap-mandatory md:overflow-x-visible md:snap-none md:grid-cols-3 gap-6 md:gap-8 pb-4 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+          >
           {testimonials.map((testimonial, idx) => (
             <motion.div
               key={testimonial.id}
@@ -57,7 +85,7 @@ export function Testimonials() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ delay: idx * 0.15, duration: 0.6, type: "spring" }}
-              className="bg-white border border-border/50 rounded-[2rem] p-8 md:p-10 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_60px_-15px_rgba(87,0,105,0.1)] transition-shadow duration-500 relative group"
+              className="w-[85vw] sm:w-[320px] shrink-0 snap-center md:w-auto md:shrink md:snap-none bg-white border border-border/50 rounded-[2rem] p-8 md:p-10 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_60px_-15px_rgba(87,0,105,0.1)] transition-shadow duration-500 relative group flex flex-col"
             >
               <Quote className="absolute top-8 right-8 w-12 h-12 text-brand/10 group-hover:text-brand/20 transition-colors" />
               
@@ -85,6 +113,23 @@ export function Testimonials() {
 
             </motion.div>
           ))}
+          </div>
+          
+          {/* Mobile Navigation Arrows Below */}
+          <div className="md:hidden flex items-center justify-center gap-4 mt-2">
+            <button 
+              onClick={() => scroll('left')} 
+              className="w-12 h-12 flex items-center justify-center bg-white shadow-md rounded-full text-brand border border-gray-100 hover:bg-brand hover:text-white transition-colors"
+            >
+              <ChevronLeft className="w-6 h-6 -ml-0.5" />
+            </button>
+            <button 
+              onClick={() => scroll('right')} 
+              className="w-12 h-12 flex items-center justify-center bg-white shadow-md rounded-full text-brand border border-gray-100 hover:bg-brand hover:text-white transition-colors"
+            >
+              <ChevronRight className="w-6 h-6 -mr-0.5" />
+            </button>
+          </div>
         </div>
 
       </div>

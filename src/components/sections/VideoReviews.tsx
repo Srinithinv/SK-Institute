@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Play, Heart, MessageCircle, Share2, Star, Music } from 'lucide-react';
 
 const videoReviews = [
@@ -79,24 +79,27 @@ const videoReviews = [
 
 export function VideoReviews() {
   const [playingId, setPlayingId] = useState<number | null>(null);
-  const [currentPage, setCurrentPage] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  const videosPerPage = 3;
-  const totalPages = Math.ceil(videoReviews.length / videosPerPage);
-  
-  const currentVideos = videoReviews.slice(
-    currentPage * videosPerPage, 
-    (currentPage + 1) * videosPerPage
-  );
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (window.innerWidth < 768 && scrollRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+        if (scrollLeft + clientWidth >= scrollWidth - 10) {
+          scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          scrollRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+        }
+      }
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
-  const handleNext = () => {
-    setCurrentPage((prev) => (prev + 1) % totalPages);
-    setPlayingId(null);
-  };
-
-  const handlePrev = () => {
-    setCurrentPage((prev) => (prev - 1 + totalPages) % totalPages);
-    setPlayingId(null);
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const scrollAmount = direction === 'left' ? -300 : 300;
+      scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
   };
 
   return (
@@ -123,41 +126,19 @@ export function VideoReviews() {
         </div>
 
         {/* Grid Container with Navigation */}
-        <div className="max-w-6xl mx-auto px-16 md:px-20 relative group/nav">
-          
-          {/* Left Arrow */}
-          <button 
-            onClick={handlePrev}
-            className="absolute left-0 md:left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-white rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.12)] border border-gray-100 flex items-center justify-center text-dark hover:text-brand hover:scale-110 transition-all focus:opacity-100 disabled:opacity-0"
-            aria-label="Previous Page"
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
-
-          {/* Right Arrow */}
-          <button 
-            onClick={handleNext}
-            className="absolute right-0 md:right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-white rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.12)] border border-gray-100 flex items-center justify-center text-dark hover:text-brand hover:scale-110 transition-all focus:opacity-100 disabled:opacity-0"
-            aria-label="Next Page"
-          >
-            <ChevronRight className="w-6 h-6" />
-          </button>
+        <div className="max-w-6xl mx-auto px-4 md:px-20 relative group/carousel">
           
           {/* Grid Layout with AnimatePresence for smooth transitions */}
           <div className="overflow-hidden pb-12 pt-4">
             <AnimatePresence mode="wait">
               <motion.div 
-                key={currentPage}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-                className="grid grid-cols-1 md:grid-cols-3 gap-6 justify-items-center"
+                ref={scrollRef}
+                className="flex md:grid overflow-x-auto snap-x snap-mandatory md:overflow-x-visible md:snap-none md:grid-cols-3 lg:grid-cols-4 gap-6 pb-4 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] justify-items-center"
               >
-                {currentVideos.map((review) => (
+                {videoReviews.map((review) => (
                   <div
                     key={review.id}
-                    className="w-full max-w-[280px] relative"
+                    className="w-[85vw] sm:w-[280px] shrink-0 snap-center md:w-full md:shrink md:snap-none relative"
                   >
                     {/* Video Card Container (9:16 aspect ratio) - Reduced shadow for performance */}
                     <div 
@@ -257,6 +238,22 @@ export function VideoReviews() {
                 ))}
               </motion.div>
             </AnimatePresence>
+          </div>
+          
+          {/* Mobile Navigation Arrows Below */}
+          <div className="md:hidden flex items-center justify-center gap-4 mt-2">
+            <button 
+              onClick={() => scroll('left')} 
+              className="w-12 h-12 flex items-center justify-center bg-white shadow-md rounded-full text-brand border border-gray-100 hover:bg-brand hover:text-white transition-colors"
+            >
+              <ChevronLeft className="w-6 h-6 -ml-0.5" />
+            </button>
+            <button 
+              onClick={() => scroll('right')} 
+              className="w-12 h-12 flex items-center justify-center bg-white shadow-md rounded-full text-brand border border-gray-100 hover:bg-brand hover:text-white transition-colors"
+            >
+              <ChevronRight className="w-6 h-6 -mr-0.5" />
+            </button>
           </div>
         </div>
       </div>

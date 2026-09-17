@@ -77,14 +77,7 @@ export function CourseDiscovery() {
         </div>
 
         {/* Premium Corporate Grid with Sleek Hover Effects */}
-        <div className="flex items-center gap-2 md:block">
-          <button 
-            onClick={() => scroll('left')} 
-            className="md:hidden shrink-0 z-30 w-10 h-10 flex items-center justify-center bg-white shadow-md rounded-full text-brand border border-gray-100 hover:bg-brand hover:text-white transition-colors"
-          >
-            <ChevronLeft className="w-6 h-6 -ml-0.5" />
-          </button>
-          
+        <div className="relative flex flex-col group/carousel">
           <div 
             ref={scrollRef}
             className="flex-1 flex md:grid overflow-x-auto snap-x snap-mandatory md:overflow-x-visible md:snap-none md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 pb-4 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
@@ -157,12 +150,21 @@ export function CourseDiscovery() {
           </AnimatePresence>
           </div>
 
-          <button 
-            onClick={() => scroll('right')} 
-            className="md:hidden shrink-0 z-30 w-10 h-10 flex items-center justify-center bg-white shadow-md rounded-full text-brand border border-gray-100 hover:bg-brand hover:text-white transition-colors"
-          >
-            <ChevronRight className="w-6 h-6 -mr-0.5" />
-          </button>
+          {/* Mobile Navigation Arrows Below */}
+          <div className="md:hidden flex items-center justify-center gap-4 mt-2">
+            <button 
+              onClick={() => scroll('left')} 
+              className="w-12 h-12 flex items-center justify-center bg-white shadow-md rounded-full text-brand border border-gray-100 hover:bg-brand hover:text-white transition-colors"
+            >
+              <ChevronLeft className="w-6 h-6 -ml-0.5" />
+            </button>
+            <button 
+              onClick={() => scroll('right')} 
+              className="w-12 h-12 flex items-center justify-center bg-white shadow-md rounded-full text-brand border border-gray-100 hover:bg-brand hover:text-white transition-colors"
+            >
+              <ChevronRight className="w-6 h-6 -mr-0.5" />
+            </button>
+          </div>
         </div>
 
         {/* Syllabus Modal */}

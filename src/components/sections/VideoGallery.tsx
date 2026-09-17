@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, X } from 'lucide-react';
-import { useState } from 'react';
+import { Play, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
 
 const videos = [
   {
@@ -54,11 +54,33 @@ const videos = [
 ];
 
 export function VideoGallery() {
-  const [hoveredVideo, setHoveredVideo] = useState<number | null>(null);
   const [activeVideoUrl, setActiveVideoUrl] = useState<string | null>(null);
+  const [hoveredVideo, setHoveredVideo] = useState<number | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (window.innerWidth < 768 && scrollRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+        if (scrollLeft + clientWidth >= scrollWidth - 10) {
+          scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          scrollRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+        }
+      }
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const scrollAmount = direction === 'left' ? -300 : 300;
+      scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   return (
-    <section className="py-16 bg-gray-50 relative overflow-hidden" id="videos">
+    <section className="py-24 bg-dark/5 relative overflow-hidden" id="video-gallery">
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 relative z-10">
         
         <div className="flex flex-col items-center text-center mb-10">
@@ -77,7 +99,11 @@ export function VideoGallery() {
           </motion.div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="relative group/carousel">
+          <div 
+            ref={scrollRef}
+            className="flex md:grid overflow-x-auto snap-x snap-mandatory md:overflow-x-visible md:snap-none md:grid-cols-2 lg:grid-cols-3 gap-6 pb-4 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+          >
           {videos.map((video, idx) => (
             <motion.div
               key={video.id}
@@ -88,7 +114,7 @@ export function VideoGallery() {
               onHoverStart={() => setHoveredVideo(video.id)}
               onHoverEnd={() => setHoveredVideo(null)}
               onClick={() => setActiveVideoUrl(video.videoUrl)}
-              className="group relative rounded-[2rem] overflow-hidden cursor-pointer aspect-video bg-dark"
+              className="w-[85vw] sm:w-[320px] shrink-0 snap-center md:w-auto md:shrink md:snap-none group relative rounded-[2rem] overflow-hidden cursor-pointer aspect-video bg-dark"
             >
               {/* Thumbnail */}
               <img 
@@ -134,6 +160,23 @@ export function VideoGallery() {
               </div>
             </motion.div>
           ))}
+          </div>
+          
+          {/* Mobile Navigation Arrows Below */}
+          <div className="md:hidden flex items-center justify-center gap-4 mt-2">
+            <button 
+              onClick={() => scroll('left')} 
+              className="w-12 h-12 flex items-center justify-center bg-white shadow-md rounded-full text-brand border border-gray-100 hover:bg-brand hover:text-white transition-colors"
+            >
+              <ChevronLeft className="w-6 h-6 -ml-0.5" />
+            </button>
+            <button 
+              onClick={() => scroll('right')} 
+              className="w-12 h-12 flex items-center justify-center bg-white shadow-md rounded-full text-brand border border-gray-100 hover:bg-brand hover:text-white transition-colors"
+            >
+              <ChevronRight className="w-6 h-6 -mr-0.5" />
+            </button>
+          </div>
         </div>
 
       </div>
