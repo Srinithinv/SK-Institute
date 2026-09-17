@@ -129,7 +129,7 @@ export function VideoReviews() {
         <div className="max-w-6xl mx-auto px-4 md:px-20 relative group/carousel">
           
           {/* Grid Layout with AnimatePresence for smooth transitions */}
-          <div className="overflow-hidden pb-12 pt-4">
+          <div className="overflow-hidden pb-2 md:pb-12 pt-4">
             <AnimatePresence mode="wait">
               <motion.div 
                 ref={scrollRef}
