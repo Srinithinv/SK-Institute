@@ -136,6 +136,7 @@ export function Header() {
           <Menu className="w-6 h-6" />
         </button>
       </div>
+      </div>
 
       {/* Mobile Navigation Overlay */}
       <AnimatePresence>
@@ -198,7 +199,6 @@ export function Header() {
           </motion.div>
         )}
       </AnimatePresence>
-        </div>
       </header>
     </>
   );
