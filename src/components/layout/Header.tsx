@@ -90,11 +90,11 @@ export function Header() {
           </div>
         </div>
 
-        <div className={`py-4 transition-colors duration-300 ${isScrolled ? 'bg-brand' : 'bg-transparent'}`}>
+        <div className={`py-4 transition-colors duration-300 ${isScrolled ? 'bg-white shadow-sm' : 'bg-white/95 backdrop-blur-md'}`}>
           <div className="max-w-[1440px] mx-auto px-6 md:px-12 flex items-center justify-between">
         {/* Logo Placeholder */}
         <Link to="/" className="flex items-center gap-2 group">
-          <img src="/logo.png" alt="SK Technologies Logo" className="h-16 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]" />
+          <img src="/logo.png" alt="SK Technologies Logo" className="h-16 w-auto object-contain" />
         </Link>
 
         {/* Desktop Navigation */}
@@ -114,14 +114,14 @@ export function Header() {
                   }
                 }
               }}
-              className="text-sm font-medium text-white/80 hover:text-white transition-colors drop-shadow-md"
+              className="text-sm font-medium text-brand/80 hover:text-brand transition-colors drop-shadow-sm"
             >
               {link.label}
             </Link>
           ))}
           <button
             onClick={() => openBooking()}
-            className="px-5 py-2.5 rounded-lg bg-white text-brand text-sm font-semibold hover:bg-gray-100 transition-colors focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-dark shadow-lg"
+            className="px-5 py-2.5 rounded-lg bg-brand text-white text-sm font-semibold hover:bg-brand/90 transition-colors focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-white shadow-md"
           >
             Book Free Counselling
           </button>
@@ -129,7 +129,7 @@ export function Header() {
 
         {/* Mobile Menu Toggle */}
         <button
-          className="md:hidden p-2 -mr-2 text-white hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-white rounded-md drop-shadow-md"
+          className="md:hidden p-2 -mr-2 text-brand hover:text-brand/80 focus-visible:ring-2 focus-visible:ring-brand rounded-md drop-shadow-sm"
           onClick={() => setIsMobileMenuOpen(true)}
           aria-label="Open menu"
         >
