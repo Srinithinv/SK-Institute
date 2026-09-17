@@ -138,7 +138,7 @@ export function VideoReviews() {
                 {videoReviews.map((review) => (
                   <div
                     key={review.id}
-                    className="w-[85vw] sm:w-[280px] shrink-0 snap-center md:w-full md:shrink md:snap-none relative"
+                    className="w-[70vw] sm:w-[260px] shrink-0 snap-center md:w-full md:max-w-[260px] md:mx-auto md:shrink md:snap-none relative"
                   >
                     {/* Video Card Container (9:16 aspect ratio) - Reduced shadow for performance */}
                     <div 
