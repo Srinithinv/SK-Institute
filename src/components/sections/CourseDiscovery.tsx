@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { COURSES as courses, type Course } from '../../data/courses';
-import { ArrowUpRight, X } from 'lucide-react';
+import { ArrowUpRight, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const categories = ["All", "DEVELOPMENT", "DATA & AI", "CLOUD & DEVOPS"];
 
@@ -11,6 +11,29 @@ export function CourseDiscovery() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [selectedSyllabusCourse, setSelectedSyllabusCourse] = useState<Course | null>(null);
   const navigate = useNavigate();
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll logic for mobile
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (window.innerWidth < 768 && scrollRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+        if (scrollLeft + clientWidth >= scrollWidth - 10) {
+          scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          scrollRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+        }
+      }
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const scrollAmount = direction === 'left' ? -300 : 300;
+      scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   const filteredCourses = activeCategory === "All"
     ? courses
@@ -54,7 +77,25 @@ export function CourseDiscovery() {
         </div>
 
         {/* Premium Corporate Grid with Sleek Hover Effects */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="relative group/carousel">
+          <button 
+            onClick={() => scroll('left')} 
+            className="md:hidden absolute left-0 top-1/2 -translate-y-1/2 -ml-2 z-30 w-10 h-10 flex items-center justify-center bg-white shadow-lg rounded-full text-brand border border-gray-100 opacity-90"
+          >
+            <ChevronLeft className="w-6 h-6 -ml-0.5" />
+          </button>
+          
+          <button 
+            onClick={() => scroll('right')} 
+            className="md:hidden absolute right-0 top-1/2 -translate-y-1/2 -mr-2 z-30 w-10 h-10 flex items-center justify-center bg-white shadow-lg rounded-full text-brand border border-gray-100 opacity-90"
+          >
+            <ChevronRight className="w-6 h-6 -mr-0.5" />
+          </button>
+
+          <div 
+            ref={scrollRef}
+            className="flex md:grid overflow-x-auto snap-x snap-mandatory md:overflow-x-visible md:snap-none md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 pb-4 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+          >
           <AnimatePresence mode='popLayout'>
             {filteredCourses.map((course, idx) => (
               <motion.div
@@ -64,7 +105,7 @@ export function CourseDiscovery() {
                 exit={{ opacity: 0, y: 20 }}
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
                 onClick={() => navigate(`/course/${course.id}`)}
-                className="group flex flex-col bg-white border border-gray-200 rounded-xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                className="w-[85vw] sm:w-[320px] shrink-0 snap-center md:w-auto md:shrink md:snap-none group flex flex-col bg-white border border-gray-200 rounded-xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
               >
                 {/* Top Half: Image with hover zoom */}
                 <div className="h-48 overflow-hidden relative w-full">
@@ -122,6 +163,7 @@ export function CourseDiscovery() {
               </motion.div>
             ))}
           </AnimatePresence>
+          </div>
         </div>
 
         {/* Syllabus Modal */}
