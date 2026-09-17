@@ -1,0 +1,6 @@
+Course Syllabus
+
+Module 1: Introduction
+Module 2: Core Concepts
+Module 3: Advanced Topics
+Module 4: Final Project

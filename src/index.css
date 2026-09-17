@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #FAFAFA;
+  --color-dark: #12141D;
+  --color-dark-surface: #1E212B;
+  --color-primary-text: #1A1A1A;
+  --color-secondary-text: #666666;
+  --color-brand: #0047b3;
+  --color-accent: #00a2ff;
+  --color-success: #10B981;
+  --color-border: #E5E7EB;
+
+  --font-heading: "Plus Jakarta Sans", sans-serif;
+  --font-body: "Inter", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-primary-text font-body antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading font-bold;
+  }
+
+  *:focus-visible {
+    @apply outline-none ring-2 ring-brand ring-offset-2 ring-offset-background;
+  }
+}
