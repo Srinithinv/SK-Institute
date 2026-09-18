@@ -133,12 +133,12 @@ export function VideoReviews() {
             <AnimatePresence mode="wait">
               <motion.div 
                 ref={scrollRef}
-                className="flex md:grid overflow-x-auto snap-x snap-mandatory md:overflow-x-visible md:snap-none md:grid-cols-3 lg:grid-cols-4 gap-6 pb-4 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] justify-items-center"
+                className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 md:pb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
               >
                 {videoReviews.map((review) => (
                   <div
                     key={review.id}
-                    className="w-[70vw] sm:w-[260px] shrink-0 snap-center md:w-full md:max-w-[260px] md:mx-auto md:shrink md:snap-none relative"
+                    className="w-[70vw] sm:w-[260px] shrink-0 snap-center relative"
                   >
                     {/* Video Card Container (9:16 aspect ratio) - Reduced shadow for performance */}
                     <div 
