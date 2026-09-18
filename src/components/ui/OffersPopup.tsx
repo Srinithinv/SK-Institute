@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, Gift, Zap, TrendingUp, Award, BookOpen, ArrowRight } from 'lucide-react';
+import { useBooking } from '../../contexts/BookingContext';
 
 const OFFERS = [
   {
@@ -55,6 +56,7 @@ export function OffersPopup() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(!hasShownPopup);
+  const { openBooking } = useBooking();
 
   useEffect(() => {
     if (!hasShownPopup) {
@@ -134,7 +136,13 @@ export function OffersPopup() {
 
               {/* Bottom interaction area */}
               <div className="flex flex-col items-center mt-8 relative z-10">
-                <button className="group/btn relative overflow-hidden bg-brand text-white font-bold text-sm px-8 py-3.5 rounded-full hover:scale-105 transition-all duration-300 shadow-[0_10px_20px_rgba(87,0,105,0.3)] flex items-center gap-2">
+                <button 
+                  onClick={() => {
+                    setIsVisible(false);
+                    openBooking();
+                  }}
+                  className="group/btn relative overflow-hidden bg-brand text-white font-bold text-sm px-8 py-3.5 rounded-full hover:scale-105 transition-all duration-300 shadow-[0_10px_20px_rgba(87,0,105,0.3)] flex items-center gap-2"
+                >
                   <span className="relative z-10">CLAIM OFFER</span>
                   <ArrowRight className="w-4 h-4 relative z-10 group-hover/btn:translate-x-1 transition-transform" />
                   

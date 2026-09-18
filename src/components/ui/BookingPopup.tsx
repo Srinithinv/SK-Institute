@@ -4,7 +4,7 @@ import { X, Send, Sparkles } from 'lucide-react';
 import { useBooking } from '../../contexts/BookingContext';
 
 export function BookingPopup() {
-  const { isBookingOpen, closeBooking } = useBooking();
+  const { isBookingOpen, closeBooking, submitBooking } = useBooking();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -13,6 +13,7 @@ export function BookingPopup() {
     course: ''
   });
   const [errors, setErrors] = useState({ email: '', phone: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     let value = e.target.value;
@@ -50,7 +51,7 @@ export function BookingPopup() {
     setErrors({ ...errors, [name]: '' }); // Clear error when user starts typing
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     let hasError = false;
@@ -76,19 +77,36 @@ export function BookingPopup() {
       return;
     }
     
-    // Construct WhatsApp message
-    const text = `*New Counselling Request*%0A%0A*Name:* ${formData.firstName} ${formData.lastName}%0A*Email:* ${formData.email}%0A*Phone:* ${formData.phone}%0A*Course:* ${formData.course}`;
-    
-    // Replace this with your actual WhatsApp business number (include country code, no + or spaces)
-    const whatsappNumber = "919876543210"; 
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${text}`;
-    
-    // Open WhatsApp in a new tab
-    window.open(whatsappUrl, '_blank');
-    
-    // Close the popup and reset form
-    closeBooking();
-    setFormData({ firstName: '', lastName: '', email: '', phone: '', course: '' });
+    setIsSubmitting(true);
+    try {
+      // Save to Firebase
+      await submitBooking({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        course: formData.course
+      });
+
+      // Construct WhatsApp message
+      const text = `*New Counselling Request*%0A%0A*Name:* ${formData.firstName} ${formData.lastName}%0A*Email:* ${formData.email}%0A*Phone:* ${formData.phone}%0A*Course:* ${formData.course}`;
+      
+      // Replace this with your actual WhatsApp business number (include country code, no + or spaces)
+      const whatsappNumber = "919876543210"; 
+      const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${text}`;
+      
+      // Open WhatsApp in a new tab
+      window.open(whatsappUrl, '_blank');
+      
+      // Close the popup and reset form
+      closeBooking();
+      setFormData({ firstName: '', lastName: '', email: '', phone: '', course: '' });
+    } catch (error) {
+      console.error("Failed to submit booking:", error);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -195,8 +213,8 @@ export function BookingPopup() {
                 </div>
 
                 <div className="pt-2">
-                  <button type="submit" className="w-full py-3 bg-brand hover:bg-brand/90 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-[0_8px_20px_rgba(0,71,179,0.25)] hover:shadow-[0_10px_25px_rgba(0,71,179,0.35)] hover:-translate-y-0.5">
-                    <span>Secure My Free Session</span>
+                  <button disabled={isSubmitting} type="submit" className="w-full py-3 bg-brand hover:bg-brand/90 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-[0_8px_20px_rgba(0,71,179,0.25)] hover:shadow-[0_10px_25px_rgba(0,71,179,0.35)] hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed">
+                    <span>{isSubmitting ? 'Securing...' : 'Secure My Free Session'}</span>
                     <Send className="w-4 h-4" />
                   </button>
                 </div>
