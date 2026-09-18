@@ -1,7 +1,5 @@
 import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../lib/firebase';
 
 interface BookingContextType {
   isBookingOpen: boolean;
@@ -27,12 +25,15 @@ export function BookingProvider({ children }: { children: ReactNode }) {
 
   const submitBooking = async (data: any) => {
     try {
-      await addDoc(collection(db, 'leads'), {
-        ...data,
-        createdAt: serverTimestamp(),
-        source: 'BookingPopup',
-        status: 'New'
+      const response = await fetch('http://localhost:5000/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit booking');
+      }
     } catch (error) {
       console.error("Error adding booking: ", error);
       throw error;

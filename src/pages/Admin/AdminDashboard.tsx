@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react';
-import { collection, query, orderBy, getDocs, Timestamp } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
 import { Users, Phone, Mail, BookOpen, Calendar, ChevronDown, Download, Search, TrendingUp } from 'lucide-react';
 
 interface Lead {
@@ -12,7 +10,7 @@ interface Lead {
   course: string;
   source: string;
   status: string;
-  createdAt: Timestamp;
+  createdAt: string;
 }
 
 export function AdminDashboard() {
@@ -26,13 +24,15 @@ export function AdminDashboard() {
 
   const fetchLeads = async () => {
     try {
-      const q = query(collection(db, 'leads'), orderBy('createdAt', 'desc'));
-      const querySnapshot = await getDocs(q);
-      const leadsData: Lead[] = [];
-      querySnapshot.forEach((doc) => {
-        leadsData.push({ id: doc.id, ...doc.data() } as Lead);
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:5000/api/leads', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
-      setLeads(leadsData);
+      if (!response.ok) throw new Error('Failed to fetch leads');
+      const data = await response.json();
+      setLeads(data);
     } catch (error) {
       console.error('Error fetching leads:', error);
     } finally {
@@ -48,9 +48,9 @@ export function AdminDashboard() {
     lead.course.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const formatDate = (timestamp: Timestamp) => {
-    if (!timestamp) return 'N/A';
-    const date = timestamp.toDate();
+  const formatDate = (dateString: string) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
     return new Intl.DateTimeFormat('en-IN', {
       day: 'numeric',
       month: 'short',
@@ -102,7 +102,7 @@ export function AdminDashboard() {
           { label: 'New Today', value: leads.filter(l => {
             if (!l.createdAt) return false;
             const today = new Date();
-            const date = l.createdAt.toDate();
+            const date = new Date(l.createdAt);
             return date.getDate() === today.getDate() && date.getMonth() === today.getMonth();
           }).length, icon: Calendar, color: 'text-green-600', bg: 'bg-green-50' },
           { label: 'Pending Callback', value: leads.filter(l => l.status === 'New').length, icon: Phone, color: 'text-orange-600', bg: 'bg-orange-50' },
