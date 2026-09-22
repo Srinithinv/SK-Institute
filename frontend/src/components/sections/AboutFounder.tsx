@@ -5,7 +5,7 @@ export function AboutFounder() {
   const [founder, setFounder] = useState<any>(null);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/content/founder')
+    fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/founder`)
       .then(res => res.json())
       .then(data => setFounder(data))
       .catch(err => console.error('Failed to load founder content:', err));

@@ -19,7 +19,7 @@ export function CoursesPage() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/content/courses')
+    fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/courses`)
       .then(res => res.json())
       .then(data => {
         if (data && data.length > 0) {

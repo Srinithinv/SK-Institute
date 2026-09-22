@@ -19,7 +19,7 @@ export function Testimonials() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/content/testimonials')
+    fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/testimonials`)
       .then(res => res.json())
       .then(data => {
         if (data && data.length > 0) {

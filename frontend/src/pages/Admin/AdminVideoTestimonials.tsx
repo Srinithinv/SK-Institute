@@ -26,7 +26,7 @@ export function AdminVideoTestimonials() {
 
   const fetchVideoTestimonials = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/content/video-testimonials');
+      const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/video-testimonials`);
       if (!response.ok) throw new Error('Failed to fetch video testimonials');
       const data = await response.json();
       setVideoTestimonials(data);
@@ -53,8 +53,8 @@ export function AdminVideoTestimonials() {
       const token = localStorage.getItem('token');
       const method = currentVideoTestimonial.id ? 'PUT' : 'POST';
       const url = currentVideoTestimonial.id 
-        ? `http://localhost:5000/api/content/video-testimonials/${currentVideoTestimonial.id}`
-        : 'http://localhost:5000/api/content/video-testimonials';
+        ? `\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/video-testimonials/${currentVideoTestimonial.id}`
+        : `\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/video-testimonials`;
 
       const response = await fetch(url, {
         method,
@@ -85,7 +85,7 @@ export function AdminVideoTestimonials() {
     
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/content/video-testimonials/${id}`, {
+      const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/video-testimonials/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });

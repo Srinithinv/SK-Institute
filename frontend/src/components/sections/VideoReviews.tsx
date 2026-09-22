@@ -8,7 +8,7 @@ export function VideoReviews() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/content/video-testimonials')
+    fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/video-testimonials`)
       .then(res => res.json())
       .then(data => {
         if (data && data.length > 0) {

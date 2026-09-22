@@ -6,7 +6,7 @@ export function AboutInstitute() {
   const [content, setContent] = useState<any>(null);
   
   useEffect(() => {
-    fetch('http://localhost:5000/api/content/about')
+    fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/about`)
       .then(res => res.json())
       .then(data => setContent(data))
       .catch(err => console.error('Failed to load about content:', err));

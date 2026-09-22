@@ -28,7 +28,7 @@ export function AdminTestimonials() {
 
   const fetchTestimonials = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/content/testimonials');
+      const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/testimonials`);
       if (!response.ok) throw new Error('Failed to fetch testimonials');
       const data = await response.json();
       setTestimonials(data);
@@ -55,8 +55,8 @@ export function AdminTestimonials() {
       const token = localStorage.getItem('token');
       const method = currentTestimonial.id ? 'PUT' : 'POST';
       const url = currentTestimonial.id 
-        ? `http://localhost:5000/api/content/testimonials/${currentTestimonial.id}`
-        : 'http://localhost:5000/api/content/testimonials';
+        ? `\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/testimonials/${currentTestimonial.id}`
+        : `\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/testimonials`;
 
       const response = await fetch(url, {
         method,
@@ -87,7 +87,7 @@ export function AdminTestimonials() {
     
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/content/testimonials/${id}`, {
+      const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/testimonials/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });

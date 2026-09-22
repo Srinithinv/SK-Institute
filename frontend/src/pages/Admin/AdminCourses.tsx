@@ -31,7 +31,7 @@ export function AdminCourses() {
 
   const fetchCourses = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/content/courses');
+      const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/courses`);
       if (!response.ok) throw new Error('Failed to fetch courses');
       const data = await response.json();
       setCourses(data);
@@ -58,8 +58,8 @@ export function AdminCourses() {
       const token = localStorage.getItem('token');
       const method = currentCourse.id ? 'PUT' : 'POST';
       const url = currentCourse.id 
-        ? `http://localhost:5000/api/content/courses/${currentCourse.id}`
-        : 'http://localhost:5000/api/content/courses';
+        ? `\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/courses/${currentCourse.id}`
+        : `\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/courses`;
 
       const response = await fetch(url, {
         method,
@@ -90,7 +90,7 @@ export function AdminCourses() {
     
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/content/courses/${id}`, {
+      const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/courses/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });

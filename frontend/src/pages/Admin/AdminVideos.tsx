@@ -27,7 +27,7 @@ export function AdminVideos() {
 
   const fetchVideos = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/content/videos');
+      const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/videos`);
       if (!response.ok) throw new Error('Failed to fetch videos');
       const data = await response.json();
       setVideos(data);
@@ -54,8 +54,8 @@ export function AdminVideos() {
       const token = localStorage.getItem('token');
       const method = currentVideo.id ? 'PUT' : 'POST';
       const url = currentVideo.id 
-        ? `http://localhost:5000/api/content/videos/${currentVideo.id}`
-        : 'http://localhost:5000/api/content/videos';
+        ? `\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/videos/${currentVideo.id}`
+        : `\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/videos`;
 
       const response = await fetch(url, {
         method,
@@ -86,7 +86,7 @@ export function AdminVideos() {
     
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/content/videos/${id}`, {
+      const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/videos/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });

@@ -26,7 +26,7 @@ export function AdminFounder() {
 
   const fetchFounderData = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/content/founder');
+      const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/founder`);
       if (!response.ok) throw new Error('Failed to fetch founder data');
       const data = await response.json();
       if (data) {
@@ -53,7 +53,7 @@ export function AdminFounder() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/content/founder', {
+      const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/founder`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

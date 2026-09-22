@@ -22,7 +22,7 @@ export function AdminAbout() {
 
   const fetchAbout = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/content/about');
+      const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/about`);
       if (response.ok) {
         const data = await response.json();
         if (data) {
@@ -43,7 +43,7 @@ export function AdminAbout() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/content/about', {
+      const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/about`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
