@@ -157,7 +157,15 @@ export function Hero() {
           className="flex flex-col sm:flex-row items-center gap-6"
         >
           <a
-            href="#courses"
+            href="#services"
+            onClick={(e) => {
+              e.preventDefault();
+              const element = document.getElementById('services');
+              if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+                window.history.pushState(null, '', '/#services');
+              }
+            }}
             className="group relative px-10 py-4 bg-brand rounded-full text-white font-bold text-base overflow-hidden flex items-center justify-center gap-3 shadow-[0_0_40px_rgba(87,0,105,0.4)] hover:shadow-[0_0_60px_rgba(87,0,105,0.6)] transition-all duration-300 hover:scale-105"
           >
             <motion.div 

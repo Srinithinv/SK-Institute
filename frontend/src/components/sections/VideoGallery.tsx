@@ -2,75 +2,47 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Play, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
-const videos = [
-  {
-    id: 1,
-    title: "System Architecture Masterclass",
-    thumbnail: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=800",
-    duration: "45:20",
-    date: "Latest Live Class",
-    videoUrl: "https://www.youtube.com/embed/bMknfKXIFA8?autoplay=1"
-  },
-  {
-    id: 2,
-    title: "Advanced React Patterns",
-    thumbnail: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&q=80&w=800",
-    duration: "52:10",
-    date: "Frontend Engineering",
-    videoUrl: "https://www.youtube.com/embed/8pDqJVdNa44?autoplay=1"
-  },
-  {
-    id: 3,
-    title: "AWS Cloud Deployment",
-    thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800",
-    duration: "1:15:00",
-    date: "DevOps Track",
-    videoUrl: "https://www.youtube.com/embed/k1RI5locZE4?autoplay=1"
-  },
-  {
-    id: 4,
-    title: "Machine Learning Foundations",
-    thumbnail: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&q=80&w=800",
-    duration: "58:30",
-    date: "Data Science",
-    videoUrl: "https://www.youtube.com/embed/i_LwzRVP7bg?autoplay=1"
-  },
-  {
-    id: 5,
-    title: "Mobile App Development",
-    thumbnail: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&q=80&w=800",
-    duration: "1:02:15",
-    date: "Mobile Track",
-    videoUrl: "https://www.youtube.com/embed/fis26HvvDII?autoplay=1"
-  },
-  {
-    id: 6,
-    title: "Python for Beginners",
-    thumbnail: "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?auto=format&fit=crop&q=80&w=800",
-    duration: "4:20:00",
-    date: "Programming",
-    videoUrl: "https://www.youtube.com/embed/rfscVS0vtbw?autoplay=1"
-  }
-];
-
 export function VideoGallery() {
+  const [videos, setVideos] = useState<any[]>([]);
   const [activeVideoUrl, setActiveVideoUrl] = useState<string | null>(null);
   const [hoveredVideo, setHoveredVideo] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    fetch('http://localhost:5000/api/content/videos')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          const mappedVideos = data.map((v: any) => ({
+            id: v.id,
+            title: v.title,
+            thumbnail: v.thumbnail_url,
+            duration: "1:00:00", // Fallback
+            date: v.category,
+            videoUrl: v.video_url
+          }));
+          setVideos(mappedVideos);
+        }
+      })
+      .catch(err => console.error('Failed to load videos:', err));
+  }, []);
+
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    if (isPaused) return;
     const interval = setInterval(() => {
-      if (window.innerWidth < 768 && scrollRef.current) {
+      if (scrollRef.current) {
         const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
         if (scrollLeft + clientWidth >= scrollWidth - 10) {
           scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
         } else {
-          scrollRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+          scrollRef.current.scrollBy({ left: 344, behavior: 'smooth' });
         }
       }
-    }, 4000);
+    }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [isPaused]);
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -99,7 +71,14 @@ export function VideoGallery() {
           </motion.div>
         </div>
 
-        <div className="relative group/carousel">
+        <div 
+          className="relative group/carousel"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          onTouchStart={() => setIsPaused(true)}
+          onTouchEnd={() => setIsPaused(false)}
+          onTouchCancel={() => setIsPaused(false)}
+        >
           <div 
             ref={scrollRef}
             className="flex md:grid overflow-x-auto snap-x snap-mandatory md:overflow-x-visible md:snap-none md:grid-cols-2 lg:grid-cols-3 gap-6 pb-4 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"

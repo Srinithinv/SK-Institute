@@ -1,6 +1,21 @@
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 
 export function AboutFounder() {
+  const [founder, setFounder] = useState<any>(null);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/content/founder')
+      .then(res => res.json())
+      .then(data => setFounder(data))
+      .catch(err => console.error('Failed to load founder content:', err));
+  }, []);
+
+  const name = founder?.name || 'Alex Mercer';
+  const title = founder?.title || 'Former Tech Lead';
+  const bio = founder?.bio || `"I started this institute because I saw a massive gap between what academic institutions teach and what the technology industry actually needs."\n\n"Having spent over a decade architecting systems for Fortune 500 companies, I realized that true engineering skill is forged in the fires of real-world problem solving, not just textbook theory."`;
+  const image_url = founder?.image_url || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=1200';
+
   return (
     <section className="relative pt-12 pb-4 lg:pt-16 lg:pb-8 bg-white text-dark overflow-hidden" id="founder">
       
@@ -19,7 +34,7 @@ export function AboutFounder() {
               transition={{ duration: 1, ease: "easeOut" }}
               viewport={{ once: true }}
               style={{ 
-                backgroundImage: 'url("https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=1200")' // Professional portrait
+                backgroundImage: `url("${image_url}")`
               }}
             />
             {/* Tech Overlay */}
@@ -38,7 +53,7 @@ export function AboutFounder() {
                 </svg>
               </div>
               <div>
-                <div className="text-xs font-bold text-dark">Former Tech Lead</div>
+                <div className="text-xs font-bold text-dark">{title}</div>
                 <div className="text-[10px] font-semibold text-brand uppercase tracking-wider">Fortune 500</div>
               </div>
             </motion.div>
@@ -62,13 +77,8 @@ export function AboutFounder() {
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-[#8d00aa]">Next Generation</span>
               </h2>
               
-              <div className="space-y-3 text-base text-secondary-text font-medium leading-relaxed max-w-2xl">
-                <p>
-                  "I started this institute because I saw a massive gap between what academic institutions teach and what the technology industry actually needs."
-                </p>
-                <p>
-                  "Having spent over a decade architecting systems for Fortune 500 companies, I realized that true engineering skill is forged in the fires of real-world problem solving, not just textbook theory."
-                </p>
+              <div className="space-y-3 text-base text-secondary-text font-medium leading-relaxed max-w-2xl whitespace-pre-line">
+                {bio}
                 
                 <div className="mt-5 p-4 rounded-xl bg-gray-50 border border-gray-100 relative">
                   <svg className="w-6 h-6 text-brand/20 absolute -top-3 -left-1" fill="currentColor" viewBox="0 0 24 24">
@@ -89,7 +99,7 @@ export function AboutFounder() {
               >
                 <div className="h-[1px] w-8 bg-brand/30" />
                 <div className="font-heading text-xl font-black text-dark uppercase tracking-widest">
-                  Alex Mercer
+                  {name}
                 </div>
               </motion.div>
             </motion.div>

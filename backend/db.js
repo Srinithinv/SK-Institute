@@ -43,6 +43,110 @@ async function initializeDatabase() {
       )
     `);
 
+    // --- CMS TABLES ---
+
+    // About section
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS content_about (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        description TEXT NOT NULL,
+        mission TEXT NOT NULL,
+        vision TEXT NOT NULL,
+        stats_students VARCHAR(50),
+        stats_courses VARCHAR(50),
+        stats_awards VARCHAR(50)
+      )
+    `);
+
+    // Founder section
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS content_founder (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        title VARCHAR(255) NOT NULL,
+        bio TEXT NOT NULL,
+        image_url TEXT
+      )
+    `);
+
+    // Courses / Services
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS content_courses (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        description TEXT NOT NULL,
+        duration VARCHAR(100),
+        level VARCHAR(100),
+        price VARCHAR(100),
+        icon VARCHAR(100)
+      )
+    `);
+    // Add columns if they don't exist
+    await client.query(`ALTER TABLE content_courses ADD COLUMN IF NOT EXISTS image_url TEXT;`);
+    await client.query(`ALTER TABLE content_courses ADD COLUMN IF NOT EXISTS category VARCHAR(100);`);
+
+    // Live Class Videos
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS content_videos (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        video_url TEXT NOT NULL,
+        thumbnail_url TEXT,
+        category VARCHAR(100)
+      )
+    `);
+
+    // Text Testimonials
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS content_testimonials (
+        id SERIAL PRIMARY KEY,
+        student_name VARCHAR(255) NOT NULL,
+        role VARCHAR(255),
+        text TEXT NOT NULL,
+        rating INTEGER DEFAULT 5,
+        image_url TEXT
+      )
+    `);
+
+    // Video Testimonials
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS content_video_testimonials (
+        id SERIAL PRIMARY KEY,
+        student_name VARCHAR(255) NOT NULL,
+        video_url TEXT NOT NULL,
+        thumbnail_url TEXT
+      )
+    `);
+
+    // Seed singleton tables if empty
+    const aboutRes = await client.query("SELECT COUNT(*) FROM content_about");
+    if (parseInt(aboutRes.rows[0].count) === 0) {
+      await client.query(`
+        INSERT INTO content_about (title, description, mission, vision, stats_students, stats_courses, stats_awards)
+        VALUES (
+          'Welcome to SK Institute',
+          'We provide world-class education with practical insights.',
+          'To empower students globally.',
+          'To be the leading educational platform.',
+          '1000+', '50+', '10+'
+        )
+      `);
+    }
+
+    const founderRes = await client.query("SELECT COUNT(*) FROM content_founder");
+    if (parseInt(founderRes.rows[0].count) === 0) {
+      await client.query(`
+        INSERT INTO content_founder (name, title, bio, image_url)
+        VALUES (
+          'Sriadi',
+          'Founder & Lead Instructor',
+          'A passionate educator with 10+ years of experience.',
+          ''
+        )
+      `);
+    }
+
     client.release();
     console.log('PostgreSQL Database connected and initialized.');
     

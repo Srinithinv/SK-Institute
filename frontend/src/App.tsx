@@ -4,6 +4,7 @@ import { Footer } from './components/layout/Footer';
 import { Chatbot } from './components/ui/Chatbot';
 import { HomePage } from './pages/HomePage';
 import { CourseDetailsPage } from './pages/CourseDetailsPage';
+import { CoursesPage } from './pages/CoursesPage';
 import { ScrollToTop } from './components/ui/ScrollToTop';
 
 import { BookingProvider } from './contexts/BookingContext';
@@ -27,6 +28,13 @@ function PublicLayout() {
   );
 }
 
+import { AdminAbout } from './pages/Admin/AdminAbout';
+import { AdminFounder } from './pages/Admin/AdminFounder';
+import { AdminCourses } from './pages/Admin/AdminCourses';
+import { AdminVideos } from './pages/Admin/AdminVideos';
+import { AdminTestimonials } from './pages/Admin/AdminTestimonials';
+import { AdminVideoTestimonials } from './pages/Admin/AdminVideoTestimonials';
+
 function App() {
   return (
     <AuthProvider>
@@ -40,12 +48,19 @@ function App() {
               <Route element={<AdminLayout />}>
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                <Route path="/admin/about" element={<AdminAbout />} />
+                <Route path="/admin/founder" element={<AdminFounder />} />
+                <Route path="/admin/courses" element={<AdminCourses />} />
+                <Route path="/admin/videos" element={<AdminVideos />} />
+                <Route path="/admin/testimonials" element={<AdminTestimonials />} />
+                <Route path="/admin/video-testimonials" element={<AdminVideoTestimonials />} />
               </Route>
             </Route>
 
             {/* Public Routes */}
             <Route element={<PublicLayout />}>
               <Route path="/" element={<HomePage />} />
+              <Route path="/courses" element={<CoursesPage />} />
               <Route path="/course/:id" element={<CourseDetailsPage />} />
             </Route>
           </Routes>

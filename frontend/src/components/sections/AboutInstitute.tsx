@@ -1,9 +1,17 @@
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 export function AboutInstitute() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [content, setContent] = useState<any>(null);
   
+  useEffect(() => {
+    fetch('http://localhost:5000/api/content/about')
+      .then(res => res.json())
+      .then(data => setContent(data))
+      .catch(err => console.error('Failed to load about content:', err));
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"]
@@ -15,6 +23,18 @@ export function AboutInstitute() {
   const y2 = useTransform(smoothProgress, [0, 1], [150, -150]);
   const opacity = useTransform(smoothProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
   const scale = useTransform(smoothProgress, [0, 0.5, 1], [0.8, 1, 0.9]);
+
+  // Default values while loading
+  const title = content?.title || 'Redefining Tech Education';
+  const desc = content?.description || 'We are not just a training institute. We are an incubator for the next generation of digital innovators.';
+  const mission = content?.mission || 'Our curriculum is continuously evolved by industry veterans to ensure our graduates don\'t just learn syntax—they learn how to build, scale, and secure enterprise-grade systems in the real world.';
+  const statsStudents = content?.stats_students || '10k+';
+  const statsCourses = content?.stats_courses || '95%';
+
+  // Split title for styling
+  const titleWords = title.split(' ');
+  const firstWord = titleWords[0];
+  const restOfTitle = titleWords.slice(1).join(' ');
 
   return (
     <section ref={containerRef} className="relative pt-4 pb-16 bg-white overflow-hidden" id="about">
@@ -54,25 +74,21 @@ export function AboutInstitute() {
               className="relative z-10"
             >
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-black text-dark leading-tight mb-5">
-                Redefining <span className="text-brand block">Tech Education</span>
+                {firstWord} <span className="text-brand block">{restOfTitle}</span>
               </h2>
               
               <div className="space-y-4 text-base md:text-lg text-secondary-text font-medium leading-relaxed">
-                <p>
-                  We are not just a training institute. We are an incubator for the next generation of digital innovators. Founded on the principle that practical, project-based learning accelerates career growth.
-                </p>
-                <p>
-                  Our curriculum is continuously evolved by industry veterans to ensure our graduates don't just learn syntax—they learn how to build, scale, and secure enterprise-grade systems in the real world.
-                </p>
+                <p>{desc}</p>
+                <p>{mission}</p>
               </div>
 
               <div className="mt-8 grid grid-cols-2 gap-6">
                 <div>
-                  <div className="text-3xl lg:text-4xl font-black text-dark mb-1">10k+</div>
+                  <div className="text-3xl lg:text-4xl font-black text-dark mb-1">{statsStudents}</div>
                   <div className="text-xs font-bold text-brand uppercase tracking-wider">Careers Launched</div>
                 </div>
                 <div>
-                  <div className="text-3xl lg:text-4xl font-black text-dark mb-1">95%</div>
+                  <div className="text-3xl lg:text-4xl font-black text-dark mb-1">{statsCourses}</div>
                   <div className="text-xs font-bold text-brand uppercase tracking-wider">Placement Rate</div>
                 </div>
               </div>

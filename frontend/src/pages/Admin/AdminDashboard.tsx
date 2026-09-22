@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Users, Phone, Mail, BookOpen, Calendar, ChevronDown, Download, Search, TrendingUp } from 'lucide-react';
-
+import { Users, Phone, Mail, BookOpen, Calendar, ChevronDown, Download, Search, TrendingUp, Inbox } from 'lucide-react';
+import { motion } from 'framer-motion';
+import type { Variants } from 'framer-motion';
 interface Lead {
   id: string;
   firstName: string;
@@ -60,129 +61,154 @@ export function AdminDashboard() {
     }).format(date);
   };
 
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+  
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-8 h-8 border-4 border-brand border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-brand/20 border-t-brand rounded-full animate-spin shadow-[0_0_15px_rgba(147,51,234,0.5)]"></div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <motion.div 
+      variants={containerVariants} 
+      initial="hidden" 
+      animate="show" 
+      className="space-y-8"
+    >
       {/* Header Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <motion.div variants={itemVariants} className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div>
-          <h1 className="text-2xl font-black font-heading text-dark">Lead Management</h1>
-          <p className="text-gray-500 text-sm mt-1">Manage and track student counseling requests.</p>
+          <h1 className="text-3xl font-black font-heading text-slate-800">Dashboard Overview</h1>
+          <p className="text-slate-500 text-sm mt-1">Real-time insights and student lead management.</p>
         </div>
         
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+        <div className="flex items-center gap-4">
+          <div className="relative group">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand transition-colors" />
             <input 
               type="text" 
               placeholder="Search leads..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand w-full sm:w-64"
+              className="pl-9 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand w-full sm:w-72 transition-all"
             />
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-50 transition-colors">
+          <button className="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 text-slate-600 hover:text-brand hover:border-brand rounded-xl text-sm font-semibold transition-all hover:shadow-sm">
             <Download className="w-4 h-4" />
-            <span className="hidden sm:inline">Export</span>
+            <span className="hidden sm:inline">Export CSV</span>
           </button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { label: 'Total Leads', value: leads.length, icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
+          { label: 'Total Leads', value: leads.length, icon: Users, color: 'text-blue-500', bg: 'bg-blue-50' },
           { label: 'New Today', value: leads.filter(l => {
             if (!l.createdAt) return false;
             const today = new Date();
             const date = new Date(l.createdAt);
             return date.getDate() === today.getDate() && date.getMonth() === today.getMonth();
-          }).length, icon: Calendar, color: 'text-green-600', bg: 'bg-green-50' },
-          { label: 'Pending Callback', value: leads.filter(l => l.status === 'New').length, icon: Phone, color: 'text-orange-600', bg: 'bg-orange-50' },
-          { label: 'Conversion Rate', value: '12%', icon: TrendingUp, color: 'text-purple-600', bg: 'bg-purple-50' },
+          }).length, icon: Calendar, color: 'text-emerald-500', bg: 'bg-emerald-50' },
+          { label: 'Pending Callback', value: leads.filter(l => l.status === 'New').length, icon: Phone, color: 'text-orange-500', bg: 'bg-orange-50' },
+          { label: 'Conversion Rate', value: '12%', icon: TrendingUp, color: 'text-brand', bg: 'bg-brand/10' },
         ].map((stat, i) => (
-          <div key={i} className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
-            <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${stat.bg}`}>
-              <stat.icon className={`w-6 h-6 ${stat.color}`} />
+          <div key={i} className={`bg-white border border-slate-100 p-6 rounded-2xl flex items-center gap-5 group transition-all duration-300 hover:-translate-y-1 hover:shadow-md shadow-sm`}>
+            <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${stat.bg}`}>
+              <stat.icon className={`w-7 h-7 ${stat.color}`} />
             </div>
             <div>
-              <p className="text-sm text-gray-500 font-medium">{stat.label}</p>
-              <h3 className="text-2xl font-bold text-dark">{stat.value}</h3>
+              <p className="text-sm text-slate-500 font-medium mb-1">{stat.label}</p>
+              <h3 className="text-3xl font-bold text-slate-800 tracking-tight">{stat.value}</h3>
             </div>
           </div>
         ))}
-      </div>
+      </motion.div>
 
       {/* Table Section */}
-      <div className="bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden">
+      <motion.div variants={itemVariants} className="bg-white border border-slate-200 shadow-sm rounded-2xl overflow-hidden relative">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Student Name</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Contact Info</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Course Interest</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Date</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-4"></th>
+              <tr className="border-b border-slate-200 bg-slate-50/50">
+                <th className="px-6 py-5 text-xs font-bold text-slate-500 uppercase tracking-wider">Student Name</th>
+                <th className="px-6 py-5 text-xs font-bold text-slate-500 uppercase tracking-wider">Contact Info</th>
+                <th className="px-6 py-5 text-xs font-bold text-slate-500 uppercase tracking-wider">Course Interest</th>
+                <th className="px-6 py-5 text-xs font-bold text-slate-500 uppercase tracking-wider">Date</th>
+                <th className="px-6 py-5 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-5"></th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-slate-100">
               {filteredLeads.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
-                    No leads found matching your search.
+                  <td colSpan={6} className="px-6 py-16 text-center">
+                    <div className="flex flex-col items-center justify-center text-slate-500">
+                      <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                        <Inbox className="w-8 h-8 opacity-50 text-slate-500" />
+                      </div>
+                      <p className="text-lg font-semibold text-slate-700">No leads found</p>
+                      <p className="text-sm mt-1">Try adjusting your search criteria.</p>
+                    </div>
                   </td>
                 </tr>
               ) : (
                 filteredLeads.map((lead) => (
-                  <tr key={lead.id} className="hover:bg-gray-50/50 transition-colors">
+                  <tr key={lead.id} className="hover:bg-slate-50 transition-colors group">
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-brand/10 text-brand flex items-center justify-center font-bold text-sm">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full bg-brand/10 text-brand flex items-center justify-center font-bold text-sm">
                           {lead.firstName.charAt(0)}{lead.lastName.charAt(0)}
                         </div>
                         <div>
-                          <p className="font-semibold text-dark text-sm">{lead.firstName} {lead.lastName}</p>
-                          <p className="text-xs text-gray-500">Source: {lead.source}</p>
+                          <p className="font-semibold text-slate-800 text-sm">{lead.firstName} {lead.lastName}</p>
+                          <p className="text-xs text-slate-500">Source: <span className="text-brand">{lead.source}</span></p>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex flex-col gap-1 text-sm">
-                        <div className="flex items-center gap-2 text-gray-600">
+                      <div className="flex flex-col gap-1.5 text-sm">
+                        <div className="flex items-center gap-2 text-slate-500">
                           <Phone className="w-3.5 h-3.5" />
-                          <span>{lead.phone}</span>
+                          <span className="group-hover:text-slate-700 transition-colors">{lead.phone}</span>
                         </div>
-                        <div className="flex items-center gap-2 text-gray-600">
+                        <div className="flex items-center gap-2 text-slate-500">
                           <Mail className="w-3.5 h-3.5" />
-                          <span>{lead.email}</span>
+                          <span className="group-hover:text-slate-700 transition-colors">{lead.email}</span>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <BookOpen className="w-4 h-4 text-brand" />
-                        <span className="text-sm font-medium text-dark">{lead.course}</span>
+                        <span className="text-sm font-medium text-slate-700">{lead.course}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm text-gray-600">{formatDate(lead.createdAt)}</span>
+                      <span className="text-sm text-slate-500 group-hover:text-slate-700 transition-colors">{formatDate(lead.createdAt)}</span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>
                         {lead.status}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <button className="text-gray-400 hover:text-brand transition-colors p-1">
+                      <button className="text-slate-400 hover:text-brand transition-colors p-2 hover:bg-slate-100 rounded-lg">
                         <ChevronDown className="w-5 h-5" />
                       </button>
                     </td>
@@ -192,7 +218,7 @@ export function AdminDashboard() {
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
