@@ -1,11 +1,12 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import dbData from '../../data/db.json';
 
 export function AboutFounder() {
   const [founder, setFounder] = useState<any>(null);
 
   useEffect(() => {
-    fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/founder`)
+    Promise.resolve({ ok: true, json: () => Promise.resolve(dbData['founder']) })
       .then(res => res.json())
       .then(data => setFounder(data))
       .catch(err => console.error('Failed to load founder content:', err));

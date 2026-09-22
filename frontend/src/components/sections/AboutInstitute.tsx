@@ -1,12 +1,13 @@
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
+import dbData from '../../data/db.json';
 
 export function AboutInstitute() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [content, setContent] = useState<any>(null);
   
   useEffect(() => {
-    fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/about`)
+    Promise.resolve({ ok: true, json: () => Promise.resolve(dbData['about']) })
       .then(res => res.json())
       .then(data => setContent(data))
       .catch(err => console.error('Failed to load about content:', err));

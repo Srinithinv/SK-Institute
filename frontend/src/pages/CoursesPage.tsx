@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Globe, Star, Clock, Users, ChevronLeft, ChevronRight } from 'lucide-react';
+import dbData from '../data/db.json';
 
 export function CoursesPage() {
   const categories = [
@@ -19,7 +20,7 @@ export function CoursesPage() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/courses`)
+    Promise.resolve({ ok: true, json: () => Promise.resolve(dbData['courses']) })
       .then(res => res.json())
       .then(data => {
         if (data && data.length > 0) {

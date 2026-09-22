@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Quote, Star } from 'lucide-react';
 import { useRef, useEffect, useState } from 'react';
+import dbData from '../../data/db.json';
 
 // Hardcoded positions for up to 8 avatars on the concentric circles
 const ORBIT_POSITIONS = [
@@ -19,7 +20,7 @@ export function Testimonials() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
-    fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/testimonials`)
+    Promise.resolve({ ok: true, json: () => Promise.resolve(dbData['testimonials']) })
       .then(res => res.json())
       .then(data => {
         if (data && data.length > 0) {

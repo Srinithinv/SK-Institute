@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Play, Heart, MessageCircle, Share2, Star, Music } from 'lucide-react';
+import dbData from '../../data/db.json';
 
 export function VideoReviews() {
   const [videoReviews, setVideoReviews] = useState<any[]>([]);
@@ -8,7 +9,7 @@ export function VideoReviews() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/video-testimonials`)
+    Promise.resolve({ ok: true, json: () => Promise.resolve(dbData['video-testimonials']) })
       .then(res => res.json())
       .then(data => {
         if (data && data.length > 0) {

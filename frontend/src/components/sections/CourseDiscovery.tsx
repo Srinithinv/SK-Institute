@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Globe, Star, Clock, Users, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import dbData from '../../data/db.json';
 
 export function CourseDiscovery() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ export function CourseDiscovery() {
 
   useEffect(() => {
     // End-to-end implementation: Fetching courses directly from the backend
-    fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/courses`)
+    Promise.resolve({ ok: true, json: () => Promise.resolve(dbData['courses']) })
       .then(res => res.json())
       .then(data => {
         if (data && data.length > 0) {

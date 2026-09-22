@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
+import dbData from '../../data/db.json';
 
 export function VideoGallery() {
   const [videos, setVideos] = useState<any[]>([]);
@@ -9,7 +10,7 @@ export function VideoGallery() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/content/videos`)
+    Promise.resolve({ ok: true, json: () => Promise.resolve(dbData['videos']) })
       .then(res => res.json())
       .then(data => {
         if (data && data.length > 0) {
